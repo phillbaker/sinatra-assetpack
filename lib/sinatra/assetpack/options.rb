@@ -178,7 +178,7 @@ module Sinatra
         @css_compression_options = options  if options.is_a?(Hash)
         @css_compression
       end
-
+      
       # =====================================================================
       # Stuff
 
@@ -245,17 +245,14 @@ module Sinatra
       # Returns the local file for a given URI path. (for dynamic files)
       # Returns nil if a file is not found.
       # TODO: consolidate with local_file_for
-      def dyn_local_file_for(requested_file, from)
+      def dyn_local_file_for(file, from)
         # Remove extension
-        file = requested_file
-        extension = ''
-
-        file.sub(/^(.*)(\.[^\.]+)$/) { file, extension = $1, $2 }
+        file = $1  if file =~ /^(.*)(\.[^\.]+)$/
 
         # Remove cache-buster (/js/app.28389.js => /js/app)
         file = $1  if file =~ /^(.*)\.[0-9]+$/
 
-        Dir[File.join(app.root, from, "#{file}#{extension}")].first
+        Dir[File.join(app.root, from, "#{file}.*")].first
       end
 
       # Writes `public/#{path}` based on contents of `output`.
